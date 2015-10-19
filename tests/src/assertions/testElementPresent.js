@@ -1,7 +1,7 @@
-var BASE_PATH = process.env.NIGHTWATCH_COV
-  ? 'lib-cov'
-  : 'lib';
-var Api = require('../../../'+BASE_PATH+'/core/api.js');
+
+var BASE_PATH = process.env.NIGHTWATCH_COV ? 'lib-cov' : 'lib';
+var Api = require('../../../' + BASE_PATH + '/core/api.js');
+
 module.exports = {
   setUp: function (callback) {
     callback();
@@ -13,24 +13,23 @@ module.exports = {
       options : {},
       locateStrategy : 'css selector',
       api : {
-        element : function(using, selector, callback) {
+        elements : function(using, selector, callback) {
           test.equals(selector, '.test_element');
           test.equals(using, 'css selector');
           callback({
             status : 0,
-            value : {
+            value : [{
               ELEMENT : '0'
-            }
+            }]
           });
         }
       },
       assertion : function(passed, result, expected, msg, abortOnFailure) {
         test.equals(passed, true);
-        test.equals(result, '0');
+        test.equals(result, 'present');
         test.equals(expected, 'present');
         test.equals(msg, 'Testing if element <.test_element> is present.');
         test.equals(abortOnFailure, true);
-        delete assertionFn;
         test.done();
       }
     };
@@ -45,20 +44,20 @@ module.exports = {
       options : {},
       locateStrategy : 'css selector',
       api : {
-        element : function(using, selector, callback) {
+        elements : function(using, selector, callback) {
           test.equals(selector, '.test_element');
           test.equals(using, 'css selector');
           callback({
-            status : -1
+            status : 0,
+            value : []
           });
         }
       },
       assertion : function(passed, result, expected, msg, abortOnFailure) {
         test.equals(passed, false);
-        test.equals(result, null);
+        test.equals(result, 'not present');
         test.equals(expected, 'present');
         test.equals(abortOnFailure, true);
-        delete assertionFn;
         test.done();
       }
     };
@@ -70,5 +69,4 @@ module.exports = {
   tearDown : function(callback) {
     callback();
   }
-}
-
+};

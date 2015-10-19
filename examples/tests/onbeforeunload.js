@@ -24,7 +24,16 @@ module.exports = {
           this.acceptAlert();
         }
       })
-      .waitForElementVisible('body', 1000)
-      .end();
+      .waitForElementVisible('body', 1000);
+
+  },
+
+  'go to nightwatch' : function(c) {
+    c.url('http://nightwatchjs.org')
+      .waitForElementVisible('body', 1000);
+  },
+
+  after : function(c) {
+    c.end();
   }
 };

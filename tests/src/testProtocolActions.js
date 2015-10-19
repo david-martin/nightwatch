@@ -8,7 +8,6 @@ module.exports = {
   },
 
   testElement : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
     this.client.on('selenium:session_create', function(sessionId) {
       var command = protocol.element('id', '#weblogin', function callback() {
@@ -21,8 +20,22 @@ module.exports = {
     });
   },
 
-  testElementPlural : function(test) {
+  testElementIdElement : function(test) {
     var client = this.client;
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.elementIdElement('0', 'id', '#weblogin', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'POST');
+      test.equal(command.data, '{"using":"id","value":"#weblogin"}');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/element/0/element');
+    });
+  },
+
+  testElementPlural : function(test) {
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -36,8 +49,22 @@ module.exports = {
     });
   },
 
-  testElementActive : function(test) {
+  testElementIdElementPlural : function(test) {
     var client = this.client;
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.elementIdElements('0', 'id', '#weblogin', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'POST');
+      test.equal(command.data, '{"using":"id","value":"#weblogin"}');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/element/0/elements');
+    });
+  },
+
+  testElementActive : function(test) {
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -66,7 +93,6 @@ module.exports = {
   },
 
   testElementIdSelected : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -80,7 +106,6 @@ module.exports = {
   },
 
   testElementIdEnabled : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -94,7 +119,6 @@ module.exports = {
   },
 
   testElementIdEquals : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -108,7 +132,6 @@ module.exports = {
   },
 
   testElementIdAttribute : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -122,7 +145,6 @@ module.exports = {
   },
 
   testElementIdClick : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -136,7 +158,6 @@ module.exports = {
   },
 
   testElementIdCssProperty : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -150,7 +171,6 @@ module.exports = {
   },
 
   testElementIdDisplayed : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -164,7 +184,6 @@ module.exports = {
   },
 
   testElementIdLocation : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -178,7 +197,6 @@ module.exports = {
   },
 
   testElementIdLocationInView : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -192,7 +210,6 @@ module.exports = {
   },
 
   testElementIdName : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -206,7 +223,6 @@ module.exports = {
   },
 
   testElementIdSize : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -220,7 +236,6 @@ module.exports = {
   },
 
   testElementIdText : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -234,7 +249,6 @@ module.exports = {
   },
 
   testElementIdValueGet : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -248,7 +262,6 @@ module.exports = {
   },
 
   testElementIdValuePost : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -263,7 +276,6 @@ module.exports = {
   },
 
   testExecuteString : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -278,7 +290,6 @@ module.exports = {
   },
 
   testExecuteFunction : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -293,7 +304,6 @@ module.exports = {
   },
 
   testExecuteFunctionNoArgs : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -308,7 +318,6 @@ module.exports = {
   },
 
   testExecuteAsync : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -323,7 +332,6 @@ module.exports = {
   },
 
   testExecuteAsyncFunction : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -338,7 +346,6 @@ module.exports = {
   },
 
   testFrameDefault : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -352,7 +359,6 @@ module.exports = {
   },
 
   testFramePost : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -367,7 +373,6 @@ module.exports = {
   },
 
   testFrameParent : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -380,8 +385,70 @@ module.exports = {
     });
   },
 
+  'test mouseButtonClick click left' : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.mouseButtonClick('left', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'POST');
+      test.equal(command.data, '{"button":0}');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/click');
+    });
+  },
+
+  'test mouseButtonClick click right' : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.mouseButtonClick('right', function callback() {
+        test.done();
+      });
+
+      test.equal(command.data, '{"button":2}');
+    });
+  },
+
+  'test mouseButtonClick click middle' : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.mouseButtonClick('middle', function callback() {
+        test.done();
+      });
+
+      test.equal(command.data, '{"button":1}');
+    });
+  },
+
+  'test mouseButtonClick with callback only' : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.mouseButtonClick(function callback() {
+        test.done();
+      });
+
+      test.equal(command.data, '{"button":0}');
+    });
+  },
+
+  'test mouseButtonClick with no args' : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.mouseButtonClick();
+      command.on('complete', function() {
+        test.done();
+      });
+
+      test.equal(command.data, '{"button":0}');
+    });
+  },
+
   'test mouseButtonDown click left' : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -396,7 +463,6 @@ module.exports = {
   },
 
   'test mouseButtonDown click middle' : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -409,7 +475,6 @@ module.exports = {
   },
 
   'test mouseButtonDown with callback only' : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -422,7 +487,6 @@ module.exports = {
   },
 
   'test mouseButtonUp click right' : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -437,7 +501,6 @@ module.exports = {
   },
 
   testMoveTo : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -452,7 +515,6 @@ module.exports = {
   },
 
   testRefresh : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -466,7 +528,6 @@ module.exports = {
   },
 
   testBack : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -480,7 +541,6 @@ module.exports = {
   },
 
   testForward : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -494,7 +554,6 @@ module.exports = {
   },
 
   testDoubleClick : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -507,8 +566,125 @@ module.exports = {
     });
   },
 
+  testSessions : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.sessions(function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/sessions');
+    });
+  },
+
+  testSessionDefault : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+
+      var command = protocol.session(function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202');
+    });
+  },
+
+  testSessionGETImplicit : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.session(function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202');
+    });
+  },
+
+  testSessionGETExplicit : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.session('GET', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202');
+    });
+  },
+
+  testSessionGETImplicitById : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.session('1352110219203', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219203');
+    });
+  },
+
+  testSessionGETExplicitById : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.session('GET', '1352110219203', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219203');
+    });
+  },
+
+  testSessionDELETE : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.session('DELETE', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'DELETE');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202');
+    });
+  },
+
+  testSessionDELETEById : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.session('DELETE', '1352110219203', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'DELETE');
+      test.equal(command.request.path, '/wd/hub/session/1352110219203');
+    });
+  },
+
+  testSessionPOST : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.session('POST', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'POST');
+      test.equal(command.request.path, '/wd/hub/session');
+    });
+  },
+
   testScreenshot : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -522,7 +698,6 @@ module.exports = {
   },
 
   testStatus : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -536,7 +711,6 @@ module.exports = {
   },
 
   testSubmit : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -551,7 +725,6 @@ module.exports = {
   },
 
   testTitle : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -565,7 +738,6 @@ module.exports = {
   },
 
   testWindowHandle : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -579,7 +751,6 @@ module.exports = {
   },
 
   testWindowHandlePlural : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -593,7 +764,6 @@ module.exports = {
   },
 
   testCloseWindow : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -607,7 +777,6 @@ module.exports = {
   },
 
   testSwitchWindow : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -622,7 +791,6 @@ module.exports = {
   },
 
   testWindowCommand : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -643,7 +811,6 @@ module.exports = {
   },
 
   testWindowSizeErrors : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -675,7 +842,6 @@ module.exports = {
   },
 
   testWindowSizeGet : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -689,7 +855,6 @@ module.exports = {
   },
 
   testWindowSizePost : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -718,7 +883,6 @@ module.exports = {
   },
 
   testDismissAlert : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -732,7 +896,6 @@ module.exports = {
   },
 
   testGetAlertText: function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -746,7 +909,6 @@ module.exports = {
   },
 
   testSetAlertText: function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -761,7 +923,6 @@ module.exports = {
   },
 
   testCookieGet : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -775,7 +936,6 @@ module.exports = {
   },
 
   testCookiePost : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -790,7 +950,6 @@ module.exports = {
   },
 
   testCookieDeleteAll : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -804,7 +963,6 @@ module.exports = {
   },
 
   testCookieDeleteOne : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -818,7 +976,6 @@ module.exports = {
   },
 
   testCookieErrors : function(test) {
-    var client = this.client;
     var protocol = this.protocol;
 
     this.client.on('selenium:session_create', function(sessionId) {
@@ -934,6 +1091,110 @@ module.exports = {
       });
 
       test.equal(command.data, '{"value":["\\ue007"]}');
+    });
+  },
+
+  testLog : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.sessionLog('browser', function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'POST');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/log');
+    });
+  },
+
+  testLogTypes : function(test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function(sessionId) {
+      var command = protocol.sessionLogTypes(function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/log/types');
+    });
+  },
+
+  testContexts: function (test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function (sessionId) {
+      var command = protocol.contexts(function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/contexts');
+    });
+  },
+
+  testCurrentContext: function (test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function (sessionId) {
+      var command = protocol.currentContext(function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/context');
+    });
+  },
+
+  testSetContext: function (test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function (sessionId) {
+      var command = protocol.setContext('NATIVE',function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'POST');
+      test.equal(command.data, '{"name":"NATIVE"}');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/context');
+    });
+  },
+
+  testGetOrientation: function (test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function (sessionId) {
+      var command = protocol.getOrientation(function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'GET');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/orientation');
+    });
+  },
+
+  testSetOrientation: function (test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function (sessionId) {
+      var command = protocol.setOrientation('LANDSCAPE',function callback() {
+        test.done();
+      });
+
+      test.equal(command.request.method, 'POST');
+      test.equal(command.data, '{"orientation":"LANDSCAPE"}');
+      test.equal(command.request.path, '/wd/hub/session/1352110219202/orientation');
+    });
+  },
+
+  testSetOrientationInvalid: function (test) {
+    var protocol = this.protocol;
+
+    this.client.on('selenium:session_create', function (sessionId) {
+      test.throws(function() {
+        protocol.setOrientation('TEST');
+      });
+      test.done();
     });
   },
 

@@ -1,7 +1,7 @@
 {
   "name": "nightwatch",
   "description": "A node.js bindings implementation for selenium 2.0/webdriver",
-  "version": "0.5.34",
+  "version": "0.8.3",
   "author": {
     "name": "Andrei Rusu",
     "email": "andrei@nightwatchjs.org"
@@ -10,33 +10,39 @@
   "main": "./lib/index.js",
   "licenses": {
     "type": "MIT",
-    "url": "https://raw.github.com/beatfactor/nightwatch/master/LICENSE"
+    "url": "https://raw.github.com/nightwatchjs/nightwatch/master/LICENSE"
   },
-  "bugs": "https://github.com/beatfactor/nightwatch/issues",
+  "bugs": "https://github.com/nightwatchjs/nightwatch/issues",
   "repository": {
     "type": "git",
-    "url": "git@github.com:beatfactor/nightwatch.git"
+    "url": "git@github.com:nightwatchjs/nightwatch.git"
   },
   "dependencies": {
-    "grunt": "~0.4.4",
-    "ejs": ">=0.8.3",
-    "optimist": ">=0.3.5",
+    "chai-nightwatch": "~0.1.x",
+    "ejs": "~0.8.3",
+    "lodash.clone": "^3.0.3",
+    "merge-defaults": "^0.2.1",
     "minimatch": "~0.2.14",
-    "mkpath": ">=0.1.0"
+    "mkpath": ">=0.1.0",
+    "optimist": ">=0.3.5",
+    "q": "^1.1.2",
+    "mocha-nightwatch": "^2.2.5"
   },
   "devDependencies": {
-    "nodeunit": "latest",
-    "jscoverage": "latest",
+    "chai": "^3.2.0",
     "coveralls": "latest",
-    "jshint": "~2.4.4",
-    "mock-spawn": "^0.2.1",
-    "mockery": "~1.4.0",
-    "jsonlint": "~1.6.0",
+    "grunt": "~0.4.4",
+    "grunt-complexity": "^0.1.7",
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-jsonlint": "~1.0.4",
-    "grunt-complexity": "^0.1.7",
     "grunt-npm-release": "latest",
-    "nock": "~0.45.0"
+    "jscoverage": "latest",
+    "jshint": "~2.4.4",
+    "jsonlint": "~1.6.0",
+    "mock-spawn": "^0.2.1",
+    "mockery": "~1.4.0",
+    "nock": "~0.45.0",
+    "nodeunit": "latest"
   },
   "bin": {
     "nightwatch": "./bin/nightwatch"
@@ -46,5 +52,13 @@
     "jshint": "./node_modules/.bin/jshint --verbose --config .jshintrc lib/",
     "coverage": "jscoverage lib --exclude *.ejs,*.json && NIGHTWATCH_COV=1 node ./tests/run_tests.js lcov > ./lib-cov/lcov.info",
     "test": "node ./tests/run_tests.js"
-  }
+  },
+  "files": [
+    "bin",
+    "examples",
+    "lib",
+    "README.md",
+    "LICENSE.md",
+    "index.js"
+  ]
 }

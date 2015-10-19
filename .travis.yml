@@ -1,4 +1,5 @@
 language: node_js
+sudo: false
 node_js:
   - "0.10"
 
@@ -9,8 +10,8 @@ before_script:
 script:
   - grunt
   - npm test
-#  - npm run-script coverage
+  # - npm run-script coverage
 
 after_success:
-#  - cat ./lib-cov/lcov.info |coveralls
+  # - cat ./lib-cov/lcov.info |coveralls
 

@@ -1,7 +1,7 @@
-var BASE_PATH = process.env.NIGHTWATCH_COV
-  ? 'lib-cov'
-  : 'lib';
+
+var BASE_PATH = process.env.NIGHTWATCH_COV ? 'lib-cov' : 'lib';
 var mockery = require('mockery');
+
 module.exports = {
   setUp: function(callback) {
     process.env['ENV_USERNAME'] = 'testuser';
@@ -56,9 +56,12 @@ module.exports = {
 
     mockery.registerMock('./globals.json', {
       extra : {
-        someGlobal : 'test'
+        someGlobal : 'test',
+        otherGlobal : 'extra-value'
       },
-      otherGlobal : 'other-value'
+      otherGlobal : 'other-value',
+      inheritedGlobal : 'inherited',
+      overwritten : '1'
     });
 
     mockery.registerMock('./settings.json', {
@@ -75,12 +78,29 @@ module.exports = {
       selenium : {
         start_process: true
       },
+      end_session_on_fail : true,
       test_settings : {
         'default' : {
         },
         'saucelabs' : {
           selenium : {
-            start_process : false
+            start_process : false,
+            start_session : false
+          }
+        }
+      }
+    });
+    mockery.registerMock('./selenium_override.json', {
+      src_folders : 'tests',
+      selenium : {
+        start_process: false,
+        start_session: false
+      },
+      test_settings : {
+        'default' : {
+          selenium : {
+            start_process : true,
+            start_session : true
           }
         }
       }
@@ -90,10 +110,21 @@ module.exports = {
       selenium : {
         start_process : true
       },
+      end_session_on_fail : true,
       test_settings : {
         'default' : {
           output : false,
-          disable_colors: true
+          disable_colors: true,
+          globals : {
+            overwritten : '2',
+            testGlobalOne : 'one',
+            testGlobalTwo : {
+              one : 1,
+              two : {
+                three : '3'
+              }
+            }
+          }
         },
         'extra' : {
           username : '${ENV_USERNAME}',
@@ -102,9 +133,22 @@ module.exports = {
               user : '${ENV_USERNAME}'
             }
           },
+          globals : {
+            testGlobalTwo : {
+              two : {
+                three : '5'
+              }
+            }
+          },
+          end_session_on_fail : false,
 
           selenium : {
             host : 'other.host'
+          },
+
+          cli_args : {
+            arg1 : 'arg1_value',
+            arg2 : 'arg2_value'
           },
 
           desiredCapabilities : {
@@ -140,6 +184,9 @@ module.exports = {
         if (b == './sauce.json') {
           return './sauce.json';
         }
+        if (b == './selenium_override.json') {
+          return './selenium_override.json';
+        }
         return './nightwatch.json';
       },
       resolve : function(a) {
@@ -171,7 +218,9 @@ module.exports = {
     var runner = new CliRunner({
       config : './nightwatch.json',
       env : 'default',
-      output : 'output'
+      output : 'output',
+      skiptags : 'home,arctic',
+      tag : 'danger'
     }).init();
 
     test.deepEqual(runner.settings.src_folders, ['tests']);
@@ -180,12 +229,15 @@ module.exports = {
       custom_commands_path: '',
       custom_assertions_path: '',
       page_objects_path: '',
-      output: true
+      output: true,
+      tag_filter: 'danger',
+      skiptags: [ 'home', 'arctic' ]
     }});
 
     test.equals(runner.output_folder, 'output');
     test.equals(runner.parallelMode, false);
     test.equals(runner.manageSelenium, false);
+    test.equals(runner.startSession, true);
 
     test.done();
 
@@ -267,6 +319,10 @@ module.exports = {
     }).init();
 
     test.equal(runner.manageSelenium, true);
+    test.equal(runner.startSession, true);
+    test.equal(runner.endSessionOnFail, false);
+    test.deepEqual(runner.settings.selenium.cli_args, {arg1: 'arg1_value', arg2: 'arg2_value'});
+
     test.equal(runner.settings.selenium.host, 'other.host');
     test.equal(runner.test_settings.output, false);
     test.equal(runner.test_settings.disable_colors, true);
@@ -303,6 +359,63 @@ module.exports = {
     var testSource = runner.getTestSource();
     test.expect(2);
     test.equal(testSource, 'demoTest.js');
+    test.done();
+  },
+
+  testRunTestsWithTestcaseOption : function(test) {
+    mockery.registerMock('fs', {
+      existsSync : function(module) {
+        if (module == './custom.json') {
+          return true;
+        }
+        return false;
+      },
+      statSync : function(file) {
+        if (file == 'demoTest.js') {
+          return true;
+        }
+        throw new Error('Start error.');
+      }
+    });
+
+    var CliRunner = require('../../../'+ BASE_PATH +'/../lib/runner/cli/clirunner.js');
+    var runner = new CliRunner({
+      config : './custom.json',
+      env : 'default',
+      test : 'demoTest',
+      testcase : 'testCase'
+    }).init();
+
+    var testSource = runner.getTestSource();
+    test.equal(runner.argv.testcase, 'testCase');
+    test.done();
+  },
+
+  testRunTestsWithTestcaseOptionAndWithoutTest : function(test) {
+    mockery.registerMock('fs', {
+      existsSync : function(module) {
+        if (module == './custom.json') {
+          return true;
+        }
+        return false;
+      },
+      statSync : function(file) {
+        if (file == 'demoTest.js') {
+          return true;
+        }
+        throw new Error('Start error.');
+      }
+    });
+
+    var CliRunner = require('../../../'+ BASE_PATH +'/../lib/runner/cli/clirunner.js');
+    var runner = new CliRunner({
+      config : './custom.json',
+      env : 'default',
+      testcase : 'testCase'
+    }).init();
+
+    var testSource = runner.getTestSource();
+    test.equal(runner.argv.testcase, null);
     test.done();
   },
 
@@ -402,18 +515,23 @@ module.exports = {
     }).init();
 
     runner.settings.globals_path = './globals.json';
+    runner.inheritFromDefaultEnv();
     runner.readExternalGlobals();
 
-    test.equals(runner.test_settings.globals.otherGlobal, 'other-value');
+    test.equals(runner.test_settings.globals.otherGlobal, 'extra-value');
+    test.equals(runner.test_settings.globals.inheritedGlobal, 'inherited');
     test.equals(runner.test_settings.globals.someGlobal, 'test');
-
+    test.equals(runner.test_settings.globals.overwritten, '2');
+    test.equals(runner.test_settings.globals.testGlobalOne, 'one');
+    test.equals(runner.test_settings.globals.testGlobalTwo.two.three, '5');
+    test.equals(runner.test_settings.globals.testGlobalTwo.one, 1);
 
     test.throws(function() {
       var runner = new CliRunner({
         config : './custom.json',
         env : 'extra'
       }).init();
-      runner.settings.globals_path = './incorrect.json';
+      runner.settings.globals_path = './doesnotexist.json';
       runner.readExternalGlobals();
 
     }, 'External global file could not be located - using ./incorrect.json.');
@@ -452,7 +570,44 @@ module.exports = {
     }).init();
 
     test.equal(runner.manageSelenium, false);
+    test.equal(runner.startSession, false);
+    test.equal(runner.endSessionOnFail, true);
     test.done();
+  },
+
+  testStartSeleniumEnvironmentOverride : function(test) {
+    mockery.registerMock('fs', {
+      existsSync : function(module) {
+        if (module == './selenium_override.json') {
+          return true;
+        }
+        return false;
+      }
+    });
+    var CliRunner = require('../../../'+ BASE_PATH +'/../lib/runner/cli/clirunner.js');
+    var runner = new CliRunner({
+      config : './selenium_override.json',
+      env : 'default'
+    }).init();
+
+    test.equal(runner.manageSelenium, true);
+    test.equal(runner.startSession, true);
+    test.done();
+  },
+
+  testStartSeleniuSession : function(test) {
+    var CliRunner = require('../../../'+ BASE_PATH +'/../lib/runner/cli/clirunner.js');
+    var runner = new CliRunner({
+      config : './nightwatch.json',
+      env : 'default'
+    }).init();
+
+    runner.manageSelenium = false;
+    test.expect(1);
+    runner.startSelenium(function() {
+      test.ok('callback called');
+      test.done();
+    });
   },
 
   testStartSeleniumEnabled : function(test) {
@@ -461,7 +616,15 @@ module.exports = {
         cb({}, null, 'Server already running.');
       }
     });
-    var CliRunner = require('../../../'+ BASE_PATH +'/../lib/runner/cli/clirunner.js');
+    mockery.registerMock('./errorhandler.js', {
+      handle : function(err) {
+        test.equals(err.message, 'Server already running.');
+        test.equals(runner.settings.parallelMode, true);
+        test.done();
+      }
+    });
+
+    var CliRunner = require('../../../'+ BASE_PATH + '/../lib/runner/cli/clirunner.js');
     var runner = new CliRunner({
       config : './nightwatch.json',
       env : 'default'
@@ -470,12 +633,6 @@ module.exports = {
     runner.manageSelenium = true;
     runner.parallelMode = true;
     test.expect(2);
-
-    runner.globalErrorHandler = function(err) {
-      test.equals(err.message, 'Server already running.');
-      test.equals(runner.settings.parallelMode, true);
-      test.done();
-    };
 
     runner.startSelenium();
   }

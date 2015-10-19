@@ -1,7 +1,10 @@
+var nightwatch = require('./lib/index.js');
 
 module.exports = function(grunt) {
 
   'use strict';
+
+  nightwatch.initGrunt(grunt);
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -14,21 +17,22 @@ module.exports = function(grunt) {
         src: 'bin/*.js'
       },
       lib: {
-        src: 'lib/**/*.js'
+        src: ['index.js', 'lib/**/*.js']
       },
-      tests: [
-        'tests/*.js', 'tests/extra/*.js', 'tests/src/*.js'
-      ],
       gruntfile: {
         src: 'Gruntfile.js'
       },
       examples: {
-        src: ['examples/tests', 'examples/custom-commands']
+        src: [
+          'examples/*.js',
+          'examples/tests/**/*.js',
+          'examples/custom-commands/**/*.js'
+        ]
       }
     },
 
     jsonlint: {
-      src: ['tests/*.json']
+      src: ['tests/**/*.json', 'examples/**/*.json']
     },
 
     complexity: {
@@ -68,7 +72,27 @@ module.exports = function(grunt) {
       patch : {
 
       }
+    },
+
+    nightwatch: {
+      options: {
+        cwd: './'
+      },
+
+      'default' : {
+
+      },
+
+      browserstack: {
+        argv: {
+          env: 'browserstack'
+        },
+        settings: {
+          silent: true
+        }
+      }
     }
+
   });
 
   grunt.loadNpmTasks('grunt-npm-release');

@@ -10,13 +10,13 @@ module.exports = {
     client
       .url('http://google.com')
       .waitForElementPresent('body', 1000);
-
   },
+
   'part two' : function(client) {
     client
       .setValue('input[type=text]', ['nightwatch', client.Keys.ENTER])
       .pause(1000)
-      .assert.containsText('#main', 'The Night Watch')
+      .assert.containsText('#main', 'Night Watch')
       .end();
   }
 };

@@ -7,11 +7,15 @@ module.exports = {
     client.globals.test.ok('before callback called.');
   },
 
-  demoTestAsyncOne : function (client) {
+  demoTestSyncOne : function (client) {
     client.url('http://localhost');
+    var testName = client.currentTest.name;
+    client.globals.test.deepEqual(testName, 'demoTestSyncOne');
   },
 
-  demoTestAsyncTwo : function (client) {
+  demoTestSyncTwo : function (client) {
+    var testName = client.currentTest.name;
+    client.globals.test.deepEqual(testName, 'demoTestSyncTwo');
     client.end();
   },
 

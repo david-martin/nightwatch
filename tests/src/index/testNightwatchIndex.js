@@ -67,10 +67,11 @@ module.exports = {
   testRunCommand : function(test) {
     var client = this.client = Client.init();
 
-    client.enqueueCommand('url', ['http://localhost'], function() {
+    client.api.url('http://localhost', function() {
       test.ok(true, 'Callback 1 was called');
       test.done();
     });
+    client.queue.run();
   },
 
   testChromeSessionWithRedirectStatus : function(test) {
@@ -103,7 +104,6 @@ module.exports = {
       });
     });
   },
-
 
   'Test saveScreenshotToFile mkpath failure' : function(test) {
     var client = this.client = Client.init();
@@ -168,10 +168,12 @@ module.exports = {
 
     eq(client.locateStrategy, 'xpath');
     eq(client.options.use_xpath, true);
+    eq(client.api.options.skip_testcases_on_fail, true);
     eq(client.api.launchUrl, '/home');
     eq(client.api.launch_url, '/home');
 
     eq(client.options.screenshots.enabled, false);
+    eq(typeof client.options.screenshots.on_error, 'undefined');
     eq(client.api.options.screenshots, false);
     test.done();
   },
@@ -200,19 +202,48 @@ module.exports = {
     var eq = test.equals;
 
     eq(client.api.options.log_screenshot_data, true);
+    eq(client.options.screenshots.on_error, true);
     eq(client.api.options.screenshotsPath, '');
+
+    test.done();
+  },
+
+  testSetOptionsScreenshotsOnError : function(test) {
+    var client = this.client = Client.init({
+      screenshots : {
+        enabled : true,
+        on_error : true,
+        path : ''
+      },
+      log_screenshot_data : true
+    });
+    var eq = test.equals;
+
+    eq(client.options.screenshots.on_error, true);
 
     test.done();
   },
 
   testSetOptionsScreenshotsThrows : function(test) {
     test.throws(function() {
-      var client = this.client = Client.init({
+      this.client = Client.init({
         screenshots : {
           enabled : true
         }
       });
+    }.bind(this));
+    test.done();
+  },
+
+  testEndSessionOnFail : function(test) {
+    this.client = Client.init({
+      end_session_on_fail : true
     });
+    var eq = test.equals;
+    eq(this.client.options.end_session_on_fail, true);
+    this.client.endSessionOnFail(false);
+    eq(this.client.endSessionOnFail(), false);
+    eq(this.client.options.end_session_on_fail, false);
     test.done();
   },
 
